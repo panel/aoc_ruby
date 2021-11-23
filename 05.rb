@@ -20,9 +20,14 @@ class Seat
   end
 end
 
+seats = []
 max_seat_id = data.reduce(0) do |max_seat_id, boarding_pass|
   seat_id = Seat.new(boarding_pass).seat_id
+  seats.push seat_id
   seat_id > max_seat_id ? seat_id : max_seat_id
 end
 
 puts "Part 1: #{max_seat_id}"
+
+gap = seats.sort.each_cons(2).select { |a, b| a + 1 != b }.first
+puts "Part 2: #{gap[0] + 1}"
