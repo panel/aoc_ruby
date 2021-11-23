@@ -19,9 +19,9 @@ class Height
 
     def valid?
         if @unit == 'cm'
-            @height.between?(149, 194)
+            @height.between?(150, 193)
         elsif @unit == 'in'
-            @height.between?(55, 77)
+            @height.between?(59, 76)
         else
             false
         end
@@ -32,15 +32,21 @@ end
 validators = [
     lambda { |x| x && x.to_i >= 1920 && x.to_i <= 2002 },
     lambda { |x| x && x.to_i >= 2010 && x.to_i <= 2020 },
-    lambda { |x| x && x.to_i > 2020 && x.to_i <= 2030 },
+    lambda { |x| x && x.to_i >= 2020 && x.to_i <= 2030 },
     lambda { |x|  Height.new(x).valid?  },
     lambda { |hcl| /^#[a-f0-9]{6}$/i.match(hcl) },
     lambda { |ecl| %w(amb blu brn gry grn hzl oth).include?(ecl) },
     lambda { |pid| /^\d{9}$/.match(pid) }
 ].zip(required_fields)
 
-validators
+# what i used to figure out which assertion was failing
+# pt2_rejects = pt1.select { |x| !validators.all? { |y| y[0].call(x[y[1]]) } }
+# pt2_rejects.each do |x|
+#     validators.each do |y|
+#         puts "#{y[1]} #{x[y[1]]} #{y[0].call(x[y[1]])}"
+#     end
+#     puts "----"
+# end
 
-pt2 = pt1.select { |x| !validators.all? { |y| y[0].call(x[y[1]]) } }
-pt2.each { |x| puts x }
+pt2 = pt1.select { |x| validators.all? { |y| y[0].call(x[y[1]]) } }
 puts "Part 2: #{pt2.length}"
